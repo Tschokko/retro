@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "string": "c",
+        "array": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "utility": "c",
+        "stdlib.h": "c",
+        "VkComponent.C": "cpp",
+        "VkSimpleWindow.C": "cpp",
+        "VkComponentList.C": "cpp",
+        "VkWindow.C": "cpp",
+        "VkRadioBox.C": "cpp",
+        "VkCheckBox.C": "cpp",
+        "VkInput.C": "cpp"
+    }
+}
