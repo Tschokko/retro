@@ -273,12 +273,57 @@ void __objc_GTKButton_action_cb(GtkWidget *widget, gpointer data) {
   }
 }
 
-@interface GTKWindow : GTKComponent {
+@protocol GTKContainer
+- (void)addChild:(GTKComponent *)aChild;
+@end
+
+@interface GTKBin : GTKComponent<GTKContainer> {
   GTKComponent *_child;
 }
 - (id)init;
-- (void)showAll;
 - (void)addChild:(GTKComponent *)aChild;
+- (void)removeChild;
+@end
+@implementation GTKBin
+- (id)init {
+  NSLog(@"GTKBin init entered");
+  self = [super init];
+  NSLog(@"GTKBin init finished");
+  return self;
+}
+
+- (void)dealloc {
+  NSLog(@"GTKBin dealloc entered");
+  if (_child) {
+    [_child autorelease];
+    NSLog(@"GTKBin autorelease child: %@", _child);
+  }
+  [super dealloc];
+  NSLog(@"GTKBin dealloc finished");
+}
+
+- (void)addChild:(GTKComponent *)aChild {
+  [_child autorelease];
+  _child = [aChild retain];
+  NSLog(@"GTKBin retain child: %@", _child);
+  gtk_container_add(GTK_CONTAINER([self widget]), [aChild widget]);
+}
+
+- (void)removeChild {
+  if (_child) {
+    gtk_container_remove(GTK_CONTAINER([self widget]), [_child widget]);
+    [_child autorelease];
+    NSLog(@"GTKBin autorelease child: %@", _child);
+  }
+}
+@end
+
+@interface GTKWindow : GTKBin {
+//  GTKComponent *_child;
+}
+- (id)init;
+- (void)showAll;
+// - (void)addChild:(GTKComponent *)aChild;
 @end
 @implementation GTKWindow
 - (id)init {
@@ -297,10 +342,10 @@ void __objc_GTKButton_action_cb(GtkWidget *widget, gpointer data) {
 
 - (void)dealloc {
   NSLog(@"GTKWindow dealloc entered");
-  if (_child) {
+  /*if (_child) {
     [_child autorelease];
     NSLog(@"GTKWindow autorelease child: %@", _child);
-  }
+  }*/
   [super dealloc];
   NSLog(@"GTKWindow dealloc finished");
 }
@@ -311,12 +356,12 @@ void __objc_GTKButton_action_cb(GtkWidget *widget, gpointer data) {
   NSLog(@"GTKWindow showAll finished");
 }
 
-- (void)addChild:(GTKComponent *)aChild {
+/*- (void)addChild:(GTKComponent *)aChild {
   [_child autorelease];
   _child = [aChild retain];
   NSLog(@"GTKWindow retain child: %@", _child);
   gtk_container_add(GTK_CONTAINER([self widget]), [aChild widget]);
-}
+}*/
 @end
 
 @interface GTKApplication : NSObject {
