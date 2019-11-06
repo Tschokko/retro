@@ -1,6 +1,7 @@
 #import "VKMainWindow.h"
 #import "VKApplication.h"
 
+#include <assert.h>
 #include <X11/Shell.h>
 #include <Xm/CascadeB.h>
 #include <Xm/MainW.h>

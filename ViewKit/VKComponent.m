@@ -1,5 +1,6 @@
-
 #import "VKComponent.h"
+
+#include <assert.h>
 
 @implementation VKComponent
 - (id)init {

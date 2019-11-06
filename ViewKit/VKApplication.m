@@ -1,6 +1,7 @@
 
 #import "VKApplication.h"
 
+#include <assert.h>
 #include <X11/Shell.h>
 
 /*void __objc_GTKApplication_destroy_cb(GtkWidget *widget, gpointer data) {

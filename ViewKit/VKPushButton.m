@@ -1,5 +1,6 @@
 #import "VKPushButton.h"
 
+#include <assert.h>
 #include <Xm/PushB.h>
 
 @implementation VKPushButton
