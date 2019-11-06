@@ -12,6 +12,7 @@
         "VkWindow.C": "cpp",
         "VkRadioBox.C": "cpp",
         "VkCheckBox.C": "cpp",
-        "VkInput.C": "cpp"
+        "VkInput.C": "cpp",
+        "VkApp.C": "cpp"
     }
 }

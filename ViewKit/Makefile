@@ -2,8 +2,8 @@ PROJECT = HelloWorld
 SOURCES = $(wildcard *.m)
 OBJS = $(SOURCES:.m=.o)
 CC=gcc
-CFLAGS=-Wall -I/usr/include/GNUstep -fconstant-string-class=NSConstantString `pkg-config --cflags gtk+-2.0`
-LDFLAGS=-L/usr/lib/GNUstep/Libraries -lgnustep-base -lobjc `pkg-config --libs gtk+-2.0`
+CFLAGS=-g -Wall -I/usr/include/GNUstep -fconstant-string-class=NSConstantString -fgnu-runtime
+LDFLAGS=-L/usr/lib/GNUstep/Libraries -lgnustep-base -lobjc -lXm -lXt -lX11
 
 .PHONY: all
 all: $(PROJECT)

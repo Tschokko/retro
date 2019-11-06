@@ -81,7 +81,14 @@ int main(int argc, char *argv[])
     XtVaSetValues(main_w, XmNworkWindow, XtParent(list_w), NULL);
 
     XtRealizeWidget(toplevel);
-    XtAppMainLoop(app);
+    // XtAppMainLoop(app);
+    do
+    {
+        XEvent event;
+        XtAppNextEvent(app, &event);
+        XtDispatchEvent(&event);
+    } while (XtAppGetExitFlag(app) == FALSE);
+    printf("Exit application\n");
 }
 
 void file_cb(Widget widget, XtPointer client_data, XtPointer call_data)
