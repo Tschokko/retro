@@ -1,0 +1,23 @@
+PROJECT = HelloWorld
+SOURCES = $(wildcard *.m)
+OBJS = $(SOURCES:.m=.o)
+CC=clang
+CFLAGS=-g -Wall -I/usr/local/include -I/usr/local/GNUstep/System/Library/Headers -fconstant-string-class=NSConstantString
+LDFLAGS=-L/usr/local/lib -L/usr/local/GNUstep/System/Library/Libraries -lgnustep-base -lobjc -lXm -lXt -lX11
+
+.PHONY: all
+all: $(PROJECT)
+ 
+# Compile the source files into object files
+%.o: %.m
+	$(CC) -c -o $@ $(CFLAGS) $<
+#    $(CC) $(CFLAGS) -o $@ -c $<
+
+# Link the object files into a binary
+$(PROJECT): $(OBJS)
+	$(CC) -o $@ $^ $(LDFLAGS)
+ 
+# Clean target
+.PHONY: clean
+clean:
+	rm -f $(OBJS) $(PROJECT)
