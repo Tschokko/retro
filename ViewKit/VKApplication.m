@@ -1,4 +1,3 @@
-
 #import "VKApplication.h"
 
 #include <X11/Shell.h>

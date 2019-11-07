@@ -8,6 +8,8 @@
 #include <Xm/RowColumn.h>
 #include <Xm/Separator.h>
 
+#import "VKPushButton.h"
+
 void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
                                     XtPointer callData) {
   // NSLog(@"VKMainWindow destroy callback entered");
@@ -72,6 +74,7 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
 - (VKMenuBar *)addMenuBarWithName:(NSString *)aName {
   assert(!_menu_bar && "menu bar already added");
   _menu_bar = [VKMenuBar newWithName:aName parent:self];
+  [_menu_bar setDelegate:_delegate];
   return _menu_bar;
 }
 
@@ -118,6 +121,10 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
   return self;
 }
 
+- (void)setDelegate:(id)aDelegate {
+  _delegate = aDelegate;
+}
+
 - (void)dealloc {
   NSLog(@"VKMenuBar dealloc entered");
   [super dealloc];
@@ -138,6 +145,7 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
 - (VKMenu *)addMenuWithTitle:(NSString *)aTitle
                keyEquivalent:(NSString *)aKeyEquivalent {
   VKMenu *menu = [[VKMenu newWithName:aTitle parent:self] autorelease];
+  [menu setDelegate:_delegate];
   XtVaCreateManagedWidget([aTitle cString], xmCascadeButtonWidgetClass, _widget,
                           XmNmnemonic, [aKeyEquivalent characterAtIndex:0],
                           XmNsubMenuId, [menu widget], NULL);
@@ -158,11 +166,21 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
       XmCreatePulldownMenu([aParent widget], (char *)[aName cString], NULL, 0);
   XtVaSetValues(_widget, XmNtearOffModel, XmTEAR_OFF_ENABLED, NULL);
 
+  _items = [[NSMutableArray alloc] init];
+
   return self;
+}
+
+- (void)setDelegate:(id)aDelegate {
+  _delegate = aDelegate;
 }
 
 - (void)dealloc {
   NSLog(@"VKMenu dealloc entered");
+  for (id item in _items) {
+    [item release];
+  }
+  [_items release];
   [super dealloc];
   NSLog(@"VKMenu dealloc finished");
 }
@@ -170,9 +188,15 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
 - (void)addItemWithTitle:(NSString *)aTitle
                   action:(SEL)anAction
            keyEquivalent:(NSString *)aKeyEquivalent {
-  XtVaCreateManagedWidget([aTitle cString], xmPushButtonWidgetClass, _widget,
+  VKPushButton *item =
+      [VKPushButton newWithName:aTitle parent:self label:aTitle];
+  [item setAction:anAction];
+  [item setTarget:_delegate];
+
+  [_items addObject:item];
+  /*XtVaCreateManagedWidget([aTitle cString], xmPushButtonWidgetClass, _widget,
                           XmNmnemonic, [aKeyEquivalent characterAtIndex:0],
-                          NULL);
+                          NULL);*/
   /*tAddCallback(ow[MON_SYS_LOG_W], XmNactivateCallback, mon_popup_cb,
                     (XtPointer)MON_SYS_LOG_SEL);*/
 }

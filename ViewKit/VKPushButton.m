@@ -2,6 +2,8 @@
 
 #include <Xm/PushB.h>
 
+static void __objc_VKPushButton_clicked_cb(Widget widget, XtPointer client_data,
+                                           XtPointer call_data);
 @implementation VKPushButton
 + (id)newWithName:(NSString *)aName
            parent:(VKComponent *)aParent
@@ -26,6 +28,9 @@
 
   XmStringFree(label_str);
 
+  XtAddCallback(_widget, XmNactivateCallback, __objc_VKPushButton_clicked_cb,
+                (XtPointer)self);
+
   XtManageChild(_widget);
 
   NSLog(@"VKPushButton init finished");
@@ -37,4 +42,42 @@
   [super dealloc];
   NSLog(@"VKPushButton dealloc finished");
 }
+
+- (SEL)action {
+  return _action;
+}
+
+- (void)setAction:(SEL)aAction {
+  _action = aAction;
+  NSLog(@"VKPushButton setAction called: %@", NSStringFromSelector(_action));
+}
+
+- (id)target {
+  return _target;
+}
+
+- (void)setTarget:(id)aTarget {
+  _target = aTarget;
+  NSLog(@"VKPushButton setTarget called: %@", aTarget);
+}
+
+- (id)performAction {
+  NSLog(@"VKPushButton performAction called");
+  if (_target == nil || _action == 0) {
+    return nil;
+  }
+  if ([_target respondsToSelector:_action] == NO) {
+    return nil;
+  }
+  return [_target performSelector:_action withObject:self];
+}
 @end
+
+void __objc_VKPushButton_clicked_cb(Widget widget, XtPointer client_data,
+                                    XtPointer call_data) {
+  NSLog(@"__objc_VKPushButton_clicked_cb called");
+  if (client_data != NULL) {
+    VKPushButton *button = (VKPushButton *)client_data;
+    [button performAction];
+  }
+}

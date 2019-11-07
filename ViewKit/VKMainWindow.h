@@ -25,6 +25,7 @@
 @end
 
 @interface VKMenuBar : VKComponent {
+  id _delegate;
 }
 + (id)newWithName:(NSString *)aName parent:(VKComponent *)aParent;
 - (id)initWithName:(NSString *)aName parent:(VKComponent *)aParent;
@@ -33,9 +34,12 @@
            keyEquivalent:(NSString *)aKeyEquivalent;
 - (VKMenu *)addMenuWithTitle:(NSString *)aTitle
                keyEquivalent:(NSString *)aKeyEquivalent;
+- (void)setDelegate:(id)aDelegate;
 @end
 
 @interface VKMenu : VKComponent {
+  NSMutableArray *_items;
+  id _delegate;
 }
 + (id)newWithName:(NSString *)aName parent:(VKComponent *)aParent;
 - (id)initWithName:(NSString *)aName parent:(VKComponent *)aParent;
@@ -43,4 +47,5 @@
                   action:(SEL)anAction
            keyEquivalent:(NSString *)aKeyEquivalent;
 - (void)addSeparator;
+- (void)setDelegate:(id)aDelegate;
 @end
