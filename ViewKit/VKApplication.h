@@ -7,12 +7,15 @@
 @interface VKApplication : VKComponent {
   XtAppContext _app_context;
   id _delegate;
+  NSMutableArray *_windows;
 }
-+ (id)openWithArgc:(int)argc argv:(char **)argv;
-- (id)initWithArgc:(int)argc argv:(char **)argv;
++ (id)openWithName:(NSString *)aName argc:(int)argc argv:(char **)argv;
+- (id)initWithName:(NSString *)aName argc:(int)argc argv:(char **)argv;
 - (void)setDelegate:(id)aDelegate;
+- (void)addWindow:(id)aWindow;
 - (void)run;
 - (void)quit;
+- (Display *)display;
 @end
 
 extern VKApplication *VKApp;

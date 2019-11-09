@@ -1,7 +1,7 @@
 #import "VKPushButton.h"
 
-#include <assert.h>
 #include <Xm/PushB.h>
+#include <assert.h>
 
 static void __objc_VKPushButton_clicked_cb(Widget widget, XtPointer client_data,
                                            XtPointer call_data);

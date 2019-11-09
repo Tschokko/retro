@@ -1,13 +1,13 @@
 #import "VKMainWindow.h"
 #import "VKApplication.h"
 
-#include <assert.h>
 #include <X11/Shell.h>
 #include <Xm/CascadeB.h>
 #include <Xm/MainW.h>
 #include <Xm/PushB.h>
 #include <Xm/RowColumn.h>
 #include <Xm/Separator.h>
+#include <assert.h>
 
 #import "VKPushButton.h"
 
@@ -47,8 +47,10 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
                 NULL);
   XtManageChild(_widget);
 
-  // NSLog(@"VKMainWindow initWithTitle finished");
+  // Add the new window to the application window list
+  [VKApp addWindow:self];
 
+  // NSLog(@"VKMainWindow initWithTitle finished");
   return self;
 }
 
@@ -57,6 +59,9 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
   if (_menu_bar != nil) {
     [_menu_bar release];
   }
+
+  // TODO Remove window from the application window list
+
   [super dealloc];
   NSLog(@"VKMainWindow dealloc finished");
 }
@@ -68,14 +73,12 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
 - (void)show {
   // NSLog(@"VKMainWindow run entered");
   XtPopup(_top_level_shell_widget, XtGrabNonexclusive);
-  // XtRealizeWidget(_top_level_shell_widget);
   // NSLog(@"VKMainWindow run finished");
 }
 
 - (VKMenuBar *)addMenuBarWithName:(NSString *)aName {
   assert(!_menu_bar && "menu bar already added");
   _menu_bar = [VKMenuBar newWithName:aName parent:self];
-  [_menu_bar setDelegate:_delegate];
   return _menu_bar;
 }
 
@@ -122,8 +125,8 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
   return self;
 }
 
-- (void)setDelegate:(id)aDelegate {
-  _delegate = aDelegate;
+- (void)setTarget:(id)aTarget {
+  _target = aTarget;
 }
 
 - (void)dealloc {
@@ -135,9 +138,6 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
 - (void)addItemWithTitle:(NSString *)aTitle
                   action:(SEL)anAction
            keyEquivalent:(NSString *)aKeyEquivalent {
-  // Widget pull_down_w = XmCreatePulldownMenu(_widget, "Monitor Pulldown",
-  // NULL, 0); XtVaSetValues(pull_down_w, XmNtearOffModel, XmTEAR_OFF_ENABLED,
-  // NULL);
   XtVaCreateManagedWidget([aTitle cString], xmCascadeButtonWidgetClass, _widget,
                           XmNmnemonic, [aKeyEquivalent characterAtIndex:0],
                           NULL);
@@ -146,7 +146,6 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
 - (VKMenu *)addMenuWithTitle:(NSString *)aTitle
                keyEquivalent:(NSString *)aKeyEquivalent {
   VKMenu *menu = [[VKMenu newWithName:aTitle parent:self] autorelease];
-  [menu setDelegate:_delegate];
   XtVaCreateManagedWidget([aTitle cString], xmCascadeButtonWidgetClass, _widget,
                           XmNmnemonic, [aKeyEquivalent characterAtIndex:0],
                           XmNsubMenuId, [menu widget], NULL);
@@ -165,15 +164,15 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
 
   _widget =
       XmCreatePulldownMenu([aParent widget], (char *)[aName cString], NULL, 0);
-  XtVaSetValues(_widget, XmNtearOffModel, XmTEAR_OFF_ENABLED, NULL);
+  // XtVaSetValues(_widget, XmNtearOffModel, XmTEAR_OFF_ENABLED, NULL);
 
   _items = [[NSMutableArray alloc] init];
 
   return self;
 }
 
-- (void)setDelegate:(id)aDelegate {
-  _delegate = aDelegate;
+- (void)setTarget:(id)aTarget {
+  _target = aTarget;
 }
 
 - (void)dealloc {
@@ -192,14 +191,9 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
   VKPushButton *item =
       [VKPushButton newWithName:aTitle parent:self label:aTitle];
   [item setAction:anAction];
-  [item setTarget:_delegate];
+  [item setTarget:_target];
 
   [_items addObject:item];
-  /*XtVaCreateManagedWidget([aTitle cString], xmPushButtonWidgetClass, _widget,
-                          XmNmnemonic, [aKeyEquivalent characterAtIndex:0],
-                          NULL);*/
-  /*tAddCallback(ow[MON_SYS_LOG_W], XmNactivateCallback, mon_popup_cb,
-                    (XtPointer)MON_SYS_LOG_SEL);*/
 }
 
 - (void)addSeparator {

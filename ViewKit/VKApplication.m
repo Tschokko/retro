@@ -1,41 +1,36 @@
 #import "VKApplication.h"
 
-#include <assert.h>
 #include <X11/Shell.h>
-
-/*void __objc_GTKApplication_destroy_cb(GtkWidget *widget, gpointer data) {
-  // NSLog(@"GTKApplication destroy callback entered");
-  gtk_main_quit();
-  // NSLog(@"GTKApplication destroy callback finished");
-}*/
+#include <assert.h>
 
 VKApplication *VKApp;
 
 @implementation VKApplication
-+ (id)openWithArgc:(int)argc argv:(char **)argv {
++ (id)openWithName:(NSString *)aName argc:(int)argc argv:(char **)argv {
   if (VKApp == nil) {
-    VKApp = [[self alloc] initWithArgc:argc argv:argv];
+    VKApp = [[self alloc] initWithName:aName argc:argc argv:argv];
   }
   return VKApp;
 }
 
-- (id)initWithArgc:(int)argc argv:(char **)argv {
+- (id)initWithName:(NSString *)aName argc:(int)argc argv:(char **)argv {
   // NSLog(@"VKApplication initWithArgc entered");
 
   self = [super init];
   assert(self);
 
-  // gtk_init(&argc, &argv);
-  _widget = XtOpenApplication(&_app_context, "motif4", NULL, 0, &argc, argv,
-                              NULL, sessionShellWidgetClass, NULL, 0);
+  _windows = [[NSMutableArray alloc] init];
+
+  _widget = XtOpenApplication(&_app_context, [aName cString], NULL, 0, &argc,
+                              argv, NULL, sessionShellWidgetClass, NULL, 0);
 
   // NSLog(@"VKApplication initWithArgc finished");
-
   return self;
 }
 
 - (void)dealloc {
   // NSLog(@"VKApplication dealloc entered");
+  [_windows release];
   [super dealloc];
   // NSLog(@"VKApplication dealloc finished");
 }
@@ -44,11 +39,12 @@ VKApplication *VKApp;
   _delegate = aDelegate;
 }
 
+- (void)addWindow:(id)aWindow {
+  [_windows addObject:aWindow];
+}
+
 - (void)run {
   // NSLog(@"VKApplication run entered");
-  // g_signal_connect([window widget], "destroy",
-  //                 G_CALLBACK(__objc_GTKApplication_destroy_cb), self);
-  // [window showAll];
 
   // Tell the delegate that we are about to start the application main loop
   SEL action = @selector(applicationDidFinishLaunching);
@@ -69,5 +65,9 @@ VKApplication *VKApp;
   XtAppSetExitFlag(_app_context);
 
   // NSLog(@"VKApplication quit finished");
+}
+
+- (Display *)display {
+  return XtDisplay(_widget);
 }
 @end
