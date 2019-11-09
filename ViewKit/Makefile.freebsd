@@ -3,7 +3,7 @@ SOURCES = $(wildcard *.m)
 OBJS = $(SOURCES:.m=.o)
 CC=clang
 CFLAGS=-g -Wall -I/usr/local/include -I/usr/local/GNUstep/System/Library/Headers -fconstant-string-class=NSConstantString
-LDFLAGS=-L/usr/local/lib -L/usr/local/GNUstep/System/Library/Libraries -lgnustep-base -lobjc -lXm -lXt -lX11
+LDFLAGS=-L/usr/local/lib -L/usr/local/GNUstep/System/Library/Libraries -lgnustep-base -lobjc -lGLw -lXm -lXt -lGLEW -lGLU -lGL -lX11
 
 .PHONY: all
 all: $(PROJECT)
