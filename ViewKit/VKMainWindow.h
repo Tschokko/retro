@@ -11,6 +11,8 @@
   Widget _top_level_shell_widget;
   id _delegate;
   VKMenuBar *_menu_bar;
+  VKComponent *_message_area;
+  VKComponent *_work_area;
 }
 + (id)newWithName:(NSString *)aName title:(NSString *)aTitle;
 - (id)initWithName:(NSString *)aName title:(NSString *)aTitle;
@@ -22,6 +24,10 @@
 - (void)setFrame:(NSRect)aFrameRect;
 - (void)setFrameOrigin:(NSPoint)aOrigin;
 - (void)setFrameSize:(NSSize)aSize;
+- (void)setMessageArea:(VKComponent *)aMessageArea;
+- (VKComponent *)messageArea;
+- (void)setWorkArea:(VKComponent *)aWorkArea;
+- (VKComponent *)workArea;
 @end
 
 @interface VKMenuBar : VKComponent {

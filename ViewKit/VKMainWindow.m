@@ -62,6 +62,8 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
 
   // TODO Remove window from the application window list
 
+  [_message_area release];
+
   [super dealloc];
   NSLog(@"VKMainWindow dealloc finished");
 }
@@ -107,7 +109,30 @@ void __objc_VKMainWindow_destroy_cb(Widget w, XtPointer clientData,
   argc++;
   XtSetValues(_top_level_shell_widget, args, argc);
 }
-@end
+
+- (void)setMessageArea:(VKComponent *)aMessageArea {
+  [_message_area release];
+  _message_area = [aMessageArea retain];
+
+  // XtVaSetValues(_widget, XmNmessageWindow, frame, NULL);*/
+  XtVaSetValues(_widget, XmNmessageWindow, [_message_area widget], NULL);
+}
+
+- (VKComponent *)messageArea {
+  return _message_area;
+}
+
+- (void)setWorkArea:(VKComponent *)aWorkArea {
+  [_work_area release];
+  _work_area = [aWorkArea retain];
+
+  XtVaSetValues(_widget, XmNworkWindow, [_work_area widget], NULL);
+}
+
+- (VKComponent *)workArea {
+  return _work_area;
+}
+@end // VKMainWindow
 
 @implementation VKMenuBar
 + (id)newWithName:(NSString *)aName parent:(VKComponent *)aParent {

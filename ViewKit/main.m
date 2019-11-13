@@ -1,5 +1,8 @@
 #import "NXWidget.h"
 #import "VKApplication.h"
+#import "VKComponent.h"
+#import "VKFrame.h"
+#import "VKLabel.h"
 #import "VKMainWindow.h"
 #import "VKOpenGLDrawingArea.h"
 
@@ -10,18 +13,18 @@
 
 @interface OpenGLView : VKOpenGLDrawingArea {
 }
-+ (id)newWithMainWindow:(VKMainWindow *)aParent;
-- (id)initWithMainWindow:(VKMainWindow *)aParent;
++ (id)newWithParent:(VKComponent *)aParent;
+- (id)initWithParent:(VKComponent *)aParent;
 - (void)drawRect:(NSRect)aRect;
 - (void)resize:(NSRect)aRect;
 @end // OpenGLView
 
 @implementation OpenGLView
-+ (id)newWithMainWindow:(VKMainWindow *)aParent {
-  return [[self alloc] initWithMainWindow:aParent];
++ (id)newWithParent:(VKComponent *)aParent {
+  return [[self alloc] initWithParent:aParent];
 }
 
-- (id)initWithMainWindow:(VKMainWindow *)aParent {
+- (id)initWithParent:(VKComponent *)aParent {
   self = [super initWithName:@"opengl" parent:aParent];
   return self;
 }
@@ -99,6 +102,15 @@
   [help_menu setTarget:self];
   [help_menu addItemWithTitle:@"About" action:0 keyEquivalent:@"A"];
 
+  VKFrame *message_area_frame =
+      [[VKFrame newWithName:@"main_message_area_frame" parent:_main_window]
+          autorelease];
+  VKLabel *message_area =
+      [[VKLabel newWithName:@"main_message_area"
+                     parent:message_area_frame
+                      label:@"Copyright (c) 2019 by Tschokko"] autorelease];
+  [_main_window setMessageArea:message_area_frame];
+
   /*VKPushButton *btn = [[VKPushButton newWithName:@"button_1"
                                           parent:_main_window
                                            label:@"Click Me!"] autorelease];*/
@@ -107,7 +119,8 @@
           autorelease];
   [glw setDelegate:self];*/
 
-  OpenGLView *view = [[OpenGLView newWithMainWindow:_main_window] autorelease];
+  OpenGLView *view = [[OpenGLView newWithParent:_main_window] autorelease];
+  [_main_window setWorkArea:view];
 
   return self;
 }
